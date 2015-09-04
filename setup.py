@@ -15,7 +15,8 @@ setup(
     name='librarian-netinterfaces',
     version=VERSION,
     license='BSD',
-    packages=find_packages(),
+    packages=[pkg.__name__],
+    include_package_data=True,
     long_description=read('README.rst'),
     install_requires=[
         'librarian_core',
