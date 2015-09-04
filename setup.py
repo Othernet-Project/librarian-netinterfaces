@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-import librarian_netinterfaces
+import librarian_netinterfaces as pkg
 
 
 def read(fname):
@@ -9,7 +9,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-VERSION = librarian_netinterfaces.__version__
+VERSION = pkg.__version__
 
 setup(
     name='librarian-netinterfaces',
