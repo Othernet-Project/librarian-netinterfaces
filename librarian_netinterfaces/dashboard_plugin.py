@@ -17,7 +17,7 @@ from librarian_dashboard.dashboard import DashboardPlugin
 from .lsnet import get_network_interfaces
 
 
-class Dashboard(DashboardPlugin):
+class NetInterfacesDashboardPlugin(DashboardPlugin):
     # Translators, used as dashboard section title
     heading = _('Network interfaces')
     name = 'netinterfaces'
