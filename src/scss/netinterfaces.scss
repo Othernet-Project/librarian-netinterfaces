@@ -1,0 +1,52 @@
+@import "compass/css3";
+
+.network-interfaces {
+  li {
+    // Basic geometry
+    clear: both;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .network-interfaces-detail {
+    // Basic geometry
+    display: block;
+    margin-left: 5rem;
+  }
+
+  .network-interfaces-name {
+    // Typography
+    font-size: 140%;
+  }
+
+  .network-interfaces-type {
+    // Typography
+    font-style: italic;
+    font-size: 90%;
+
+    // Basic geometry
+    margin-bottom: 0.5rem;
+  }
+
+  .network-interfaces-label {
+    // Typography
+    font-weight: bold;
+
+    // Basic geometry
+    display: inline-block;
+    width: 10rem;
+  }
+
+  .network-interfaces-icon {
+    // Typography
+    font-size: 400%;
+
+    // Basic geometry
+    float: left;
+    margin-right: 1rem;
+  }
+
+  .network-interfaces-disconnected {
+    color: #999;
+  }
+}

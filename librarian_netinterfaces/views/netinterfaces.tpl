@@ -1,25 +1,35 @@
-<%inherit file="_dashboard_section.tpl"/>
-
-## Translators, used as note in Application network interfaces section
-<p>${_('List of available network interfaces')}</p>
-<table class="network-interfaces">
-    <tr>
-        ## Translators, used as label for network interface name
-        <th>${_('Interface name')}</th>
-        <th>${'IPv4'}</th>
-        <th>${'IPv6'}</th>
-    </tr>
+<ul class="network-interfaces">
     % for iface in interfaces:
-    <tr>
-        <%
+        <% 
         if iface.is_wireless:
-            interface_type = 'wireless'
+            iface_icon = 'wifi'
+            # Translators, network interface type shown in network interface list
+            iface_type = _('wireless')
         else:
-            interface_type = 'ethernet'
+            iface_icon = 'server-network'
+            # Translators, network interface type shown in network interface list
+            iface_type = _('wired')
+
+        connected = iface.ipv4 is not None
         %>
-        <td><span class="icon ${interface_type}"></span> ${iface.name}</td>
-        <td>${iface.ipv4}</td>
-        <td>${iface.ipv6}</td>
-    </tr>
+        <li>
+        <span class="network-interfaces-icon icon icon-${'wifi' if iface.is_wireless else 'server-network'} network-interfaces-${'connected' if connected else 'disconnected'}"></span>
+        <span class="network-interfaces-name network-interfaces-detail">
+            ${iface.name}
+        </span>
+        <span class="network-interfaces-type network-interfaces-detail">${iface_type}</span>
+        <span class="network-interfaces-addr network-interfaces-detail">
+            ## Translators, network interface IP address
+            <span class="network-interfaces-label">${_('IP address:')}</span>
+            ## Translators, shown when network interface is disconnected
+            ${iface.ipv4 or _('disconnected')}
+        </span>
+        <span class="network-interfaces-addr network-interfaces-detail">
+            ## Translators, network interface IP address (IPv6)
+            <span class="network-interfaces-label">${_('IPv6 address:')}</span>
+            ## Translators, shown when network interface is disconnected
+            ${iface.ipv6 or _('disconnected')}
+        </span>
+        </li>
     % endfor
-</table>
+</ul>

@@ -1,0 +1,37 @@
+/* line 4, ../../../src/scss/netinterfaces.scss */
+.network-interfaces li {
+  clear: both;
+  position: relative;
+  margin-bottom: 2rem;
+}
+/* line 11, ../../../src/scss/netinterfaces.scss */
+.network-interfaces .network-interfaces-detail {
+  display: block;
+  margin-left: 5rem;
+}
+/* line 17, ../../../src/scss/netinterfaces.scss */
+.network-interfaces .network-interfaces-name {
+  font-size: 140%;
+}
+/* line 22, ../../../src/scss/netinterfaces.scss */
+.network-interfaces .network-interfaces-type {
+  font-style: italic;
+  font-size: 90%;
+  margin-bottom: 0.5rem;
+}
+/* line 31, ../../../src/scss/netinterfaces.scss */
+.network-interfaces .network-interfaces-label {
+  font-weight: bold;
+  display: inline-block;
+  width: 10rem;
+}
+/* line 40, ../../../src/scss/netinterfaces.scss */
+.network-interfaces .network-interfaces-icon {
+  font-size: 400%;
+  float: left;
+  margin-right: 1rem;
+}
+/* line 49, ../../../src/scss/netinterfaces.scss */
+.network-interfaces .network-interfaces-disconnected {
+  color: #999;
+}
