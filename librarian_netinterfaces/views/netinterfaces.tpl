@@ -6,14 +6,15 @@
             # Translators, network interface type shown in network interface list
             iface_type = _('wireless')
         else:
-            iface_icon = 'server-network'
+            iface_icon = 'ethernet'
             # Translators, network interface type shown in network interface list
             iface_type = _('wired')
 
         connected = iface.ipv4 is not None
+        conn_class = 'connected' if connected else 'disconnected'
         %>
         <li>
-        <span class="network-interfaces-icon icon icon-${'wifi' if iface.is_wireless else 'server-network'} network-interfaces-${'connected' if connected else 'disconnected'}"></span>
+        <span class="network-interfaces-icon icon icon-${iface_icon} network-interfaces-${conn_class}"></span>
         <span class="network-interfaces-name network-interfaces-detail">
             ${iface.name}
         </span>
