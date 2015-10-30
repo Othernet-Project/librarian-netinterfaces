@@ -23,15 +23,4 @@ class NetInterfacesDashboardPlugin(DashboardPlugin):
     name = 'netinterfaces'
 
     def get_context(self):
-        all_interfaces = get_network_interfaces()
-        physicals = dict((i.mac_address, i)
-                         for i in all_interfaces if i.is_physical)
-        # if physical interface is bridged, it will have no ip addresses
-        # assigned to it directly
-        for virtual in (i for i in all_interfaces if not i.is_physical):
-            iface = physicals.get(virtual.mac_address)
-            if iface:
-                iface.ipv4 = iface.ipv4 or virtual.ipv4
-                iface.ipv6 = iface.ipv6 or virtual.ipv6
-
-        return dict(interfaces=physicals.values())
+        return dict(interfaces=get_network_interfaces())
