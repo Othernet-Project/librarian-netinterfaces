@@ -11,12 +11,13 @@
   .network-interfaces-detail {
     // Basic geometry
     display: block;
-    margin-left: 5rem;
+    margin-left: 4rem;
+    margin-bottom: 0.3rem;
   }
 
   .network-interfaces-name {
     // Typography
-    font-size: 140%;
+    text-transform: uppercase;
   }
 
   .network-interfaces-type {
@@ -39,11 +40,13 @@
 
   .network-interfaces-icon {
     // Typography
-    font-size: 400%;
+    font-size: 300%;
+    line-height: 75%;
 
     // Basic geometry
     float: left;
     margin-right: 1rem;
+    vertical-align: top;
   }
 
   .network-interfaces-disconnected {
