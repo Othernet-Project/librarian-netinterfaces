@@ -39,12 +39,12 @@
                 <span class="network-interfaces-label">${_('IPv6 address:')}</span>
                 ${iface.ipv6addr}
             </span>
-            <span class="network-interfaces-card network-interfaces-detail">
-                ## Translators, network interface IP address
-                <span class="network-interfaces-label">${_('Interface name:')}</span>
-                ${iface.name}
-            </span>
         % endif
+        <span class="network-interfaces-card network-interfaces-detail">
+            ## Translators, network interface IP address
+            <span class="network-interfaces-label">${_('Interface name:')}</span>
+            ${iface.name}
+        </span>
         </li>
     % endfor
 </ul>
