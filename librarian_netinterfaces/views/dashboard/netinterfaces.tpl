@@ -5,6 +5,10 @@
             iface_icon = 'wifi'
             # Translators, network interface type shown in network interface list
             iface_type = _('wireless')
+        elif iface.type == 'bridge':
+            iface_icon = 'network-bridge'
+            # Translators, network interface type shown in network interaface list
+            iface_type = _('bridge')
         else:
             iface_icon = 'ethernet'
             # Translators, network interface type shown in network interface list
@@ -20,7 +24,14 @@
         <li>
         <span class="network-interfaces-icon icon icon-${iface_icon} network-interfaces-${conn_class}"></span>
         <span class="network-interfaces-name network-interfaces-detail">
-            ${name}
+            % if iface.type == 'bridge':
+                ## Translators, human-friendly label for bridge interface with
+                ## administrator-specified name (e.g., br0) replacing the 
+                ## {name} placeholder.
+                ${_('Ethernet bridge ({name})').format(name=iface.name)}
+            % else:
+                ${name}
+            % endif
         </span>
         <span class="network-interfaces-type network-interfaces-detail">${iface_type}</span>
         % if connected:
