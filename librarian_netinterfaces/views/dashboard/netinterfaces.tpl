@@ -34,17 +34,22 @@
             % endif
         </span>
         <span class="network-interfaces-type network-interfaces-detail">${iface_type}</span>
-        % if connected:
+
+        % if iface.ipv4addr:
             <span class="network-interfaces-addr network-interfaces-detail">
                 ## Translators, network interface IP address
                 <span class="network-interfaces-label">${_('IP address:')}</span>
                 ${iface.ipv4addr}
             </span>
+        % endif
+        % if iface.ipv4gateway:
             <span class="network-interfaces-gateway network-interfaces-detail">
                 ## Translators, network interface default gateway
                 <span class="network-interfaces-label">${_('Default gateway:')}</span>
                 ${iface.ipv4gateway}
             </span>
+        % endif
+        % if iface.ipv6addr:
             <span class="network-interfaces-addr network-interfaces-detail">
                 ## Translators, network interface IP address (IPv6)
                 <span class="network-interfaces-label">${_('IPv6 address:')}</span>
