@@ -22,5 +22,8 @@ class NetInterfacesDashboardPlugin(DashboardPlugin):
     heading = _('Network interfaces')
     name = 'netinterfaces'
 
+    def get_template(self):
+        return 'dashboard/' + self.name
+
     def get_context(self):
         return dict(interfaces=get_network_interfaces())
