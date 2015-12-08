@@ -3,7 +3,7 @@ librarian-netinterfaces
 =======================
 
 A dashboard plugin which lists all network interfaces, along with the IP
-addresses associated with to them.
+addresses associated with them.
 
 Installation
 ------------
