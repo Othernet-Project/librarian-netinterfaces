@@ -22,6 +22,7 @@ setup(
         'librarian_core',
         'librarian_dashboard',
         'hwd',
+        'pyhostapdconf',
     ],
     dependency_links=[
         'git+ssh://git@github.com/Outernet-Project/librarian-core.git#egg=librarian_core-0.1',
