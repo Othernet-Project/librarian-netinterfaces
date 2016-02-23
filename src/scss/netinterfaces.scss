@@ -1,6 +1,15 @@
 @import "compass/css3";
 
+.wireless-settings {
+  float: right;
+  width: 40%;
+}
+
 .network-interfaces {
+  float: left;
+  width: 60%;
+  padding-right: 2rem;
+
   li {
     // Basic geometry
     clear: both;

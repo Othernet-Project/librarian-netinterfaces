@@ -15,6 +15,7 @@ from bottle_utils.i18n import lazy_gettext as _
 from librarian_dashboard.dashboard import DashboardPlugin
 
 from .lsnet import get_network_interfaces
+from .forms import WifiForm
 
 
 class NetInterfacesDashboardPlugin(DashboardPlugin):
@@ -26,4 +27,5 @@ class NetInterfacesDashboardPlugin(DashboardPlugin):
         return 'dashboard/' + self.name
 
     def get_context(self):
-        return dict(interfaces=get_network_interfaces())
+        form = WifiForm.from_conf_file()
+        return dict(interfaces=get_network_interfaces(), form=form)
