@@ -17,7 +17,7 @@ ${forms.field(form.password, label=_('Password'))}
     ## selection drop-down
     ${forms.field(form.driver, label=_('Device type'))}
 % else:
-    ${h.HIDDEN('driver', '0')}
+    ${h.HIDDEN('driver', '1')}
 % endif
 
 <p class="buttons">
