@@ -16,3 +16,6 @@ ${_('Access point settings')}
     ${wireless_form.body()}
 </form>
 
+<%block name="extra_scripts">
+    <script src="${assets['js/wireless_form']}"></script>
+</%block>
