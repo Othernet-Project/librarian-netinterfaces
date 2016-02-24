@@ -35,7 +35,7 @@ def set_settings():
         delay=5)
     return dict(form=form,
                 message=_('Access point settings have been saved. Please '
-                          'wait until the access point is restarted.'),
+                          'reconnect your devices.'),
                 redirect_url=i18n_url('dashboard:main'))
 
 
