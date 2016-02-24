@@ -29,6 +29,8 @@
     passwordWrapper = passwordField.parents 'p.o-field'
     hasSecurity = securityField.val() isnt '0'
     passwordWrapper.toggle hasSecurity
+    if not hasSecurity
+      passwordField.val ''
 
 
   submitForm = (e) ->

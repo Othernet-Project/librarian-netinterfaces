@@ -33,7 +33,10 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     passwordField = $('#password');
     passwordWrapper = passwordField.parents('p.o-field');
     hasSecurity = securityField.val() !== '0';
-    return passwordWrapper.toggle(hasSecurity);
+    passwordWrapper.toggle(hasSecurity);
+    if (!hasSecurity) {
+      return passwordField.val('');
+    }
   };
   submitForm = function(e) {
     var res;
