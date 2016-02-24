@@ -34,7 +34,8 @@ def set_settings():
         restart_ap, args=(request.app.config['wireless.restart_command'],),
         delay=5)
     return dict(form=form,
-                message=_('Access point settings have been saved.'),
+                message=_('Access point settings have been saved. Please '
+                          'wait until the access point is restarted.'),
                 redirect_url=i18n_url('dashboard:main'))
 
 
