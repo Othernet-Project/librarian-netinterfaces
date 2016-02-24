@@ -270,8 +270,8 @@ WPA_COMPATIBLE = 1
 WPA_SECURE = 2
 WPA_MODES = (
     (WPA_NONE, _('Disabled')),
-    (WPA_COMPATIBLE, _('Low / Support older devices (WPA1/WPA2)')),
-    (WPA_SECURE, _('High (WPA2)')),
+    (WPA_SECURE, _('Enabled')),
+    #(WPA_COMPATIBLE, _('Low / Support older devices (WPA1/WPA2)')),
 )
 
 WIRELESS_DEFAULTS = {
