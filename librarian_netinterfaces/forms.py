@@ -82,7 +82,7 @@ class WifiForm(form.Form):
             helpers.disable_wpa(conf)
         helpers.set_driver(conf, self.driver_type())
         try:
-            conf.write()
+            conf.write(header=consts.HEADER)
         except OSError:
             raise self.ValidationError('save_error', None, True)
 
