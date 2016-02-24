@@ -17,6 +17,8 @@
     country = countryField.val()
     current = channelField.val()
     range = if country in NORTH_AMERICA then 11 else 13
+    if current > range
+      current = range
     options = generateOptions range
     (channelField.html options).val current
 
@@ -36,6 +38,8 @@
       form.html data
       ($ window).trigger 'wireless-updated'
       (form.parents '.o-collapsible-section').trigger 'remax'
+      togglePassword()
+      updateChannels()
     res.fail () ->
       form.prepend errorMessage
 

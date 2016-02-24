@@ -21,6 +21,9 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     country = countryField.val();
     current = channelField.val();
     range = indexOf.call(NORTH_AMERICA, country) >= 0 ? 11 : 13;
+    if (current > range) {
+      current = range;
+    }
     options = generateOptions(range);
     return (channelField.html(options)).val(current);
   };
@@ -39,7 +42,9 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     res.done(function(data) {
       form.html(data);
       ($(window)).trigger('wireless-updated');
-      return (form.parents('.o-collapsible-section')).trigger('remax');
+      (form.parents('.o-collapsible-section')).trigger('remax');
+      togglePassword();
+      return updateChannels();
     });
     return res.fail(function() {
       return form.prepend(errorMessage);
