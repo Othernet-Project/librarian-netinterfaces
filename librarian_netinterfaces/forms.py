@@ -33,7 +33,12 @@ class WifiForm(form.Form):
     channel = form.SelectField(choices=consts.CHANNELS)
     country = form.SelectField(choices=consts.COUNTRIES)
     security = form.SelectField(choices=consts.WPA_MODES)
-    password = form.StringField()
+    password = form.StringField(
+        validators=[form.LengthValidator(min_len=8, max_len=63)],
+        messages={
+            'min_len': _('Password must be at least {len} characters long.'),
+            'max_len': _('Password cannot be longer than {len} characters.'),
+        })
     driver = form.SelectField(choices=consts.DRIVERS)
 
     def wpa_mode(self):
@@ -49,7 +54,6 @@ class WifiForm(form.Form):
             return helpers.STANDARD
 
     def integer_value(self, value):
-        print(self, value)
         if value is None:
             return
         return int(value)
