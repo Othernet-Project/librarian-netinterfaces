@@ -1,12 +1,5 @@
 <%namespace name="wireless_form" file="/netinterfaces/_wireless_form.tpl"/>
 
-<form class="wireless-settings">
-    ${wireless_form.body()}
-    <p class="buttons">
-        <button type="submit">${_('Save')}</button>
-    </p>
-</form>
-
 <ul class="network-interfaces">
     % for iface in interfaces:
         <% 
@@ -73,3 +66,7 @@
         </li>
     % endfor
 </ul>
+
+<form action="${i18n_url('netinterfaces:settings')}" method="POST" id="wireless-form" class="wireless-settings">
+    ${wireless_form.body()}
+</form>

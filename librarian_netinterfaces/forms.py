@@ -8,6 +8,13 @@ from hostapdconf import parser, helpers
 from . import consts
 
 
+SECURITY_MAP = {
+    consts.WPA_NONE: helpers.WPA_NONE,
+    consts.WPA_COMPATIBLE: helpers.WPA_BOTH,
+    consts.WPA_SECURE: helpers.WPA2_ONLY,
+}
+
+
 class WifiForm(form.Form):
     messages = {
         'no_password': _('Password must be specified when security is '
@@ -22,7 +29,7 @@ class WifiForm(form.Form):
         self.show_driver = request.app.config['wireless.driver_selection']
 
     ssid = form.StringField(validators=[form.Required()])
-    hide_ssid = form.BooleanField()
+    hide_ssid = form.BooleanField(value='hide_ssid')
     channel = form.SelectField(choices=consts.CHANNELS)
     country = form.SelectField(choices=consts.COUNTRIES)
     security = form.SelectField(choices=consts.WPA_MODES)
@@ -31,10 +38,8 @@ class WifiForm(form.Form):
 
     def wpa_mode(self):
         """ Get config format of wpa mode """
-        if self.security.processed_value == consts.WPA_COMPATIBLE:
-            return helpers.WPA_BOTH
-        else:
-            return helpers.WPA2_ONLY
+        return SECURITY_MAP.get(self.security.processed_value,
+                                helpers.WPA2_ONLY)
 
     def driver_type(self):
         """ Get config format of the driver setting """
@@ -43,17 +48,29 @@ class WifiForm(form.Form):
         else:
             return helpers.STANDARD
 
+    def integer_value(self, value):
+        print(self, value)
+        if value is None:
+            return
+        return int(value)
+
+    postprocess_channel = integer_value
+    postprocess_security = integer_value
+
+    def preprocess_country(self, value):
+        return value.upper() if value else None
+
     def validate(self):
         """ Perform form-level validation and set the configuration options """
         if self.security.processed_value and not self.password.processed_value:
-            raise ValueError('no_password')
+            raise self.ValidationError('no_password', None, True)
         conf = self.getconf()
         helpers.set_ssid(conf, self.ssid.processed_value)
         helpers.set_country(conf, self.country.processed_value)
         try:
             helpers.set_channel(conf, self.channel.processed_value)
-        except helpers.ConfigurationError:
-            raise ValueError('invalid_channel')
+        except helpers.ConfigurationError as e:
+            raise self.ValidationError('invalid_channel', None, True)
         if self.hide_ssid.processed_value:
             helpers.hide_ssid(conf)
         else:
@@ -65,16 +82,9 @@ class WifiForm(form.Form):
             helpers.disable_wpa(conf)
         helpers.set_driver(conf, self.driver_type())
         try:
-            helpers.write()
+            conf.write()
         except OSError:
-            raise ValueError('save_error')
-        ret = self.restart_ap()
-
-
-    @staticmethod
-    def restart_ap():
-        restart_command = request.app.config['wireless.restart_command']
-        return os.system(restart_command)
+            raise self.ValidationError('save_error', None, True)
 
     @staticmethod
     def getconf():
@@ -95,9 +105,10 @@ class WifiForm(form.Form):
     def security_from_conf(conf):
         """ Get security field value from the configuration """
         # Determine the security mode
-        if conf.get('wpa') in [None, helpers.WPA_NONE]:
+        if conf.get('wpa') in [None, str(helpers.WPA_NONE)]:
             return consts.WPA_NONE
-        elif conf.get('wpa') in [helpers.WPA_BOTH, helpers.WPA1_ONLY]:
+        elif conf.get('wpa') in [str(helpers.WPA_BOTH),
+                                 str(helpers.WPA1_ONLY)]:
             return consts.WPA_COMPATIBLE
         else:
             return consts.WPA_SECURE

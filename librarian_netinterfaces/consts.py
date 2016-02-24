@@ -3,7 +3,7 @@
 from bottle_utils.i18n import lazy_gettext as _
 
 COUNTRIES = (
-    (None, _("No country")),
+    ("", _("No country")),
     ("AF", _("Afghanistan, Islamic Republic of")),
     ("AL", _("Albania, Republic of")),
     ("DZ", _("Algeria, People's Democratic Republic of")),
@@ -270,8 +270,8 @@ WPA_COMPATIBLE = 1
 WPA_SECURE = 2
 WPA_MODES = (
     (WPA_NONE, _('Disabled')),
-    (WPA_COMPATIBLE, _('Enabled - Support older devices')),
-    (WPA_SECURE, _('Enabled - Better security')),
+    (WPA_COMPATIBLE, _('Low / Support older devices (WPA1/WPA2)')),
+    (WPA_SECURE, _('High (WPA2)')),
 )
 
 WIRELESS_DEFAULTS = {
