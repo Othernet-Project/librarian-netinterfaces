@@ -17,8 +17,6 @@ SECURITY_MAP = {
 
 class WifiForm(form.Form):
     messages = {
-        'no_password': _('Password must be specified when security is '
-                         'enabled'),
         'invalid_channel': _('The selected channel is not legal in the '
                              'chosen country.'),
         'save_error': _('Wireless settings could not be applied'),
@@ -38,6 +36,8 @@ class WifiForm(form.Form):
         messages={
             'min_len': _('Password must be at least {len} characters long.'),
             'max_len': _('Password cannot be longer than {len} characters.'),
+            'no_password': _('Password must be specified when security is '
+                             'enabled'),
         })
     driver = form.SelectField(choices=consts.DRIVERS)
 
@@ -67,14 +67,15 @@ class WifiForm(form.Form):
     def validate(self):
         """ Perform form-level validation and set the configuration options """
         if self.security.processed_value and not self.password.processed_value:
-            raise self.ValidationError('no_password', None, True)
+            self._add_error(self.password,
+                            self.ValidationError('no_password'))
         conf = self.getconf()
         helpers.set_ssid(conf, self.ssid.processed_value)
         helpers.set_country(conf, self.country.processed_value)
         try:
             helpers.set_channel(conf, self.channel.processed_value)
         except helpers.ConfigurationError as e:
-            raise self.ValidationError('invalid_channel', None, True)
+            raise self.ValidationError('invalid_channel')
         if self.hide_ssid.processed_value:
             helpers.hide_ssid(conf)
         else:
@@ -88,7 +89,7 @@ class WifiForm(form.Form):
         try:
             conf.write(header=consts.HEADER)
         except OSError:
-            raise self.ValidationError('save_error', None, True)
+            raise self.ValidationError('save_error')
 
     @staticmethod
     def getconf():
