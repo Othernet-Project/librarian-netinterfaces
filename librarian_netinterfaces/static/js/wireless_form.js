@@ -2,10 +2,14 @@
 var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function(window, $) {
-  var NORTH_AMERICA, form, generateOptions, submitForm, togglePassword, updateChannels, url;
+  var NORTH_AMERICA, form, generateOptions, panel, resizePanel, submitForm, togglePassword, updateChannels, url;
   NORTH_AMERICA = ['US', 'CA'];
   form = $('#wireless-form');
+  panel = form.parents('.o-collapsible-section');
   url = form.attr('action');
+  resizePanel = function() {
+    panel.trigger('remax');
+  };
   generateOptions = function(range) {
     var i, n, options, ref;
     options = [];
@@ -25,7 +29,7 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
       current = range;
     }
     options = generateOptions(range);
-    return (channelField.html(options)).val(current);
+    (channelField.html(options)).val(current);
   };
   togglePassword = function() {
     var hasSecurity, passwordField, passwordWrapper, securityField;
@@ -35,8 +39,9 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     hasSecurity = securityField.val() !== '0';
     passwordWrapper.toggle(hasSecurity);
     if (!hasSecurity) {
-      return passwordField.val('');
+      passwordField.val('');
     }
+    resizePanel();
   };
   submitForm = function(e) {
     var res;
@@ -45,12 +50,11 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     res.done(function(data) {
       form.html(data);
       ($(window)).trigger('wireless-updated');
-      (form.parents('.o-collapsible-section')).trigger('remax');
       togglePassword();
-      return updateChannels();
+      updateChannels();
     });
-    return res.fail(function() {
-      return form.prepend(errorMessage);
+    res.fail(function() {
+      form.prepend(errorMessage);
     });
   };
   form.on('change', '#security', togglePassword);

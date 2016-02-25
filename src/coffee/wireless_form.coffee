@@ -2,7 +2,12 @@
   NORTH_AMERICA = ['US', 'CA']
 
   form = $ '#wireless-form'
+  panel = form.parents '.o-collapsible-section'
   url = form.attr 'action'
+
+  resizePanel = () ->
+      panel.trigger 'remax'
+      return
 
   generateOptions = (range) ->
     options = []
@@ -21,6 +26,7 @@
       current = range
     options = generateOptions range
     (channelField.html options).val current
+    return
 
 
   togglePassword = () ->
@@ -31,6 +37,8 @@
     passwordWrapper.toggle hasSecurity
     if not hasSecurity
       passwordField.val ''
+    resizePanel()
+    return
 
 
   submitForm = (e) ->
@@ -39,11 +47,13 @@
     res.done (data) ->
       form.html data
       ($ window).trigger 'wireless-updated'
-      (form.parents '.o-collapsible-section').trigger 'remax'
       togglePassword()
       updateChannels()
+      return
     res.fail () ->
       form.prepend errorMessage
+      return
+    return
 
 
   form.on 'change', '#security', togglePassword
