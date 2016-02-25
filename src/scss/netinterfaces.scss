@@ -11,6 +11,7 @@ $network-cutoff: 670px;
   @include narrower-than($network-cutoff) {
     float: none;
     width: 100%;
+    padding-right: 0;
   }
 
   li {

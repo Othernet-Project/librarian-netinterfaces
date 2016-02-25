@@ -19,37 +19,38 @@
   .network-interfaces {
     float: none;
     width: 100%;
+    padding-right: 0;
   }
 }
-/* line 16, ../../../src/scss/netinterfaces.scss */
+/* line 17, ../../../src/scss/netinterfaces.scss */
 .network-interfaces li {
   clear: both;
   position: relative;
   margin-bottom: 2rem;
 }
-/* line 23, ../../../src/scss/netinterfaces.scss */
+/* line 24, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-detail {
   display: block;
   margin-left: 4rem;
   margin-bottom: 0.3rem;
 }
-/* line 30, ../../../src/scss/netinterfaces.scss */
+/* line 31, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-name {
   text-transform: uppercase;
 }
-/* line 35, ../../../src/scss/netinterfaces.scss */
+/* line 36, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-type {
   font-style: italic;
   font-size: 90%;
   margin-bottom: 0.5rem;
 }
-/* line 44, ../../../src/scss/netinterfaces.scss */
+/* line 45, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-label {
   font-weight: bold;
   display: inline-block;
   width: 10rem;
 }
-/* line 53, ../../../src/scss/netinterfaces.scss */
+/* line 54, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-icon {
   font-size: 300%;
   line-height: 75%;
@@ -57,18 +58,18 @@
   margin-right: 1rem;
   vertical-align: top;
 }
-/* line 64, ../../../src/scss/netinterfaces.scss */
+/* line 65, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-disconnected {
   color: #999;
 }
 
-/* line 69, ../../../src/scss/netinterfaces.scss */
+/* line 70, ../../../src/scss/netinterfaces.scss */
 .wireless-settings {
   float: right;
   width: 40%;
 }
 @media only screen and (max-width: 670px) {
-  /* line 69, ../../../src/scss/netinterfaces.scss */
+  /* line 70, ../../../src/scss/netinterfaces.scss */
   .wireless-settings {
     float: none;
     width: 100%;
