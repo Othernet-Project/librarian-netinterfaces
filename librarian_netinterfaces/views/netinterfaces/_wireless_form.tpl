@@ -11,7 +11,7 @@ ${forms.field(form.country, label=_('Country'),
     help=_("Meet regional Wi-Fi frequency requirements"))}
 ${forms.field(form.channel, label=_('Channel'))}
 ${forms.field(form.security, label=_('Security'))}
-${forms.field(form.password, label=_('Password'))}
+${forms.field(form.password, label=_('Password'), autocomplete=False)}
 % if form.show_driver:
     ## Translators, wireless device type, shown next to access point driver 
     ## selection drop-down
