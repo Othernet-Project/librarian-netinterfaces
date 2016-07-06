@@ -1,13 +1,15 @@
-((window, $) ->
+((window, $, templates) ->
   NORTH_AMERICA = ['US', 'CA']
 
-  form = $ '#wireless-form'
-  panel = form.parents '.o-collapsible-section'
-  url = form.attr 'action'
+  errorMessage = templates.dashboardPluginError
+  section = $ '#dashboard-netinterfaces'
+  form = null
+  url = null
 
-  resizePanel = () ->
-      panel.trigger 'remax'
+  resizeSection = () ->
+      section.trigger 'remax'
       return
+
 
   generateOptions = (range) ->
     options = []
@@ -37,7 +39,7 @@
     passwordWrapper.toggle hasSecurity
     if not hasSecurity
       passwordField.val ''
-    resizePanel()
+    resizeSection()
     return
 
 
@@ -56,10 +58,16 @@
     return
 
 
-  form.on 'change', '#security', togglePassword
-  form.on 'change', '#country', updateChannels
-  form.on 'submit', submitForm
+  initPlugin = (e) ->
+    form = section.find '#wireless-form'
+    url = form.attr 'action'
+    form.on 'change', '#security', togglePassword
+    form.on 'change', '#country', updateChannels
+    form.on 'submit', submitForm
 
-  togglePassword()
-  updateChannels()
-)(this, this.jQuery)
+    togglePassword()
+    updateChannels()
+
+  section.on 'dashboard-plugin-loaded', initPlugin
+
+)(this, this.jQuery, this.templates)
