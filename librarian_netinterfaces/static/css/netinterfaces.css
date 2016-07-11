@@ -1,32 +1,56 @@
-/* line 4, ../../../src/scss/netinterfaces.scss */
+/**
+ * _media_query.scss: media query support
+ *
+ * Copyright 2014-2015, Outernet Inc.
+ * Some rights reserved.
+ *
+ * This software is free software licensed under the terms of GPLv3. See
+ * COPYING file that comes with the source code, or
+ * http://www.gnu.org/licenses/gpl.txt.
+ */
+/* line 6, ../../../src/scss/netinterfaces.scss */
+.network-interfaces {
+  float: left;
+  width: 60%;
+  padding-right: 2rem;
+}
+@media only screen and (max-width: 670px) {
+  /* line 6, ../../../src/scss/netinterfaces.scss */
+  .network-interfaces {
+    float: none;
+    width: 100%;
+    padding-right: 0;
+  }
+}
+/* line 17, ../../../src/scss/netinterfaces.scss */
 .network-interfaces li {
   clear: both;
   position: relative;
   margin-bottom: 2rem;
 }
-/* line 11, ../../../src/scss/netinterfaces.scss */
+/* line 24, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-detail {
   display: block;
   margin-left: 4rem;
   margin-bottom: 0.3rem;
 }
-/* line 18, ../../../src/scss/netinterfaces.scss */
+/* line 31, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-name {
   text-transform: uppercase;
 }
-/* line 23, ../../../src/scss/netinterfaces.scss */
+/* line 36, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-type {
   font-style: italic;
   font-size: 90%;
   margin-bottom: 0.5rem;
 }
-/* line 32, ../../../src/scss/netinterfaces.scss */
+/* line 45, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-label {
   font-weight: bold;
   display: inline-block;
   width: 10rem;
 }
-/* line 41, ../../../src/scss/netinterfaces.scss */
+/* line 54, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-icon {
   font-size: 300%;
   line-height: 75%;
@@ -34,7 +58,20 @@
   margin-right: 1rem;
   vertical-align: top;
 }
-/* line 52, ../../../src/scss/netinterfaces.scss */
+/* line 65, ../../../src/scss/netinterfaces.scss */
 .network-interfaces .network-interfaces-disconnected {
   color: #999;
+}
+
+/* line 70, ../../../src/scss/netinterfaces.scss */
+.wireless-settings {
+  float: right;
+  width: 40%;
+}
+@media only screen and (max-width: 670px) {
+  /* line 70, ../../../src/scss/netinterfaces.scss */
+  .wireless-settings {
+    float: none;
+    width: 100%;
+  }
 }

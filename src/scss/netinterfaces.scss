@@ -1,6 +1,19 @@
 @import "compass/css3";
+@import "base/media_query";
+
+$network-cutoff: 670px;
 
 .network-interfaces {
+  float: left;
+  width: 60%;
+  padding-right: 2rem;
+
+  @include narrower-than($network-cutoff) {
+    float: none;
+    width: 100%;
+    padding-right: 0;
+  }
+
   li {
     // Basic geometry
     clear: both;
@@ -51,5 +64,15 @@
 
   .network-interfaces-disconnected {
     color: #999;
+  }
+}
+
+.wireless-settings {
+  float: right;
+  width: 40%;
+
+  @include narrower-than($network-cutoff) {
+    float: none;
+    width: 100%;
   }
 }

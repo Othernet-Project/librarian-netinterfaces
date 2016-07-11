@@ -19,13 +19,9 @@ setup(
     include_package_data=True,
     long_description=read('README.rst'),
     install_requires=[
-        'librarian_core',
-        'librarian_dashboard',
         'hwd',
-    ],
-    dependency_links=[
-        'git+ssh://git@github.com/Outernet-Project/librarian-core.git#egg=librarian_core-0.1',
-        'git+ssh://git@github.com/Outernet-Project/librarian-dashboard.git#egg=librarian_dashboard-0.1',
+        'pyhostapdconf',
+        'librarian',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
