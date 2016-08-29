@@ -293,3 +293,10 @@ DRIVERS = (
     (STANDARD, _('Standard (most devices)')),
     (ALTERNATIVE, _('Alternative (Realtek-based devices)'))
 )
+
+AP_MODE = 'ap'
+STA_MODE = 'sta'
+MODES = (
+    (AP_MODE, _('Access point mode')),
+    (STA_MODE, _('Station mode')),
+)

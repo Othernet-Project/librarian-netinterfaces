@@ -10,12 +10,12 @@ from librarian.core.contrib.templates.renderer import template
 from .forms import WifiForm
 
 
-def restart_ap(restart_command):
-    """ Restart hostapd """
-    logging.info('Restarting wireless access point')
-    ret = os.system(restart_command)
+def restart_services(restart_cmd):
+    """ Restart network services """
+    logging.info('Restarting network services')
+    ret = os.system(restart_cmd)
     if ret:
-        logging.debug('"{}" returned {}'.format(restart_command, ret))
+        logging.debug('"{}" returned {}'.format(restart_cmd, ret))
 
 
 class NetSettings(XHRPartialFormRoute):
@@ -26,15 +26,19 @@ class NetSettings(XHRPartialFormRoute):
     partial_template_name = 'netinterfaces/_wireless_form'
     form_factory = WifiForm
 
+    def get_form_factory(self):
+        mode = self.request.params.get('mode')
+        return self.form_factory.get_form_class(mode=mode)
+
     def get_unbound_form(self):
         form_factory = self.get_form_factory()
         return form_factory.from_conf_file()
 
     def form_valid(self):
         restart_cmd = self.config['wireless.restart_command']
-        exts.tasks.schedule(restart_ap, args=(restart_cmd,), delay=5)
-        return dict(message=_('Access point settings have been saved. Please '
-                              'reconnect your devices.'),
+        exts.tasks.schedule(restart_services, args=(restart_cmd,), delay=5)
+        return dict(message=_('Network settings have been saved. The device'
+                              'is going to reboot now.'),
                     redirect_url=i18n_url('dashboard:main'))
 
     def form_invalid(self):

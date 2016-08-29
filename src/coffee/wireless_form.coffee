@@ -3,7 +3,9 @@
 
   errorMessage = templates.dashboardPluginError
   section = $ '#dashboard-netinterfaces'
+  formContainer = null
   form = null
+  modeForm = null
   url = null
 
   resizeSection = () ->
@@ -47,10 +49,27 @@
     e.preventDefault()
     res = $.post url, form.serialize()
     res.done (data) ->
-      form.html data
+      formContainer.html data
       ($ window).trigger 'wireless-updated'
-      togglePassword()
-      updateChannels()
+      initPlugin()
+      return
+    res.fail () ->
+      form.prepend errorMessage
+      return
+    return
+
+
+  toggleSwitch = () ->
+    select = $ @
+    modeForm.submit()
+
+
+  switchMode = (e) ->
+    e.preventDefault()
+    res = $.get url, modeForm.serialize()
+    res.done (data) ->
+      formContainer.html data
+      initPlugin()
       return
     res.fail () ->
       form.prepend errorMessage
@@ -59,11 +78,17 @@
 
 
   initPlugin = (e) ->
+    formContainer = section.find '.wireless-settings'
     form = section.find '#wireless-form'
+    modeForm = section.find '#mode-form'
     url = form.attr 'action'
     form.on 'change', '#security', togglePassword
     form.on 'change', '#country', updateChannels
     form.on 'submit', submitForm
+    modeForm.on 'change', '#mode', toggleSwitch
+    modeForm.on 'submit', switchMode
+    button = modeForm.find 'button'
+    button.hide()
 
     togglePassword()
     updateChannels()
