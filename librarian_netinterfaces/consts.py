@@ -297,6 +297,6 @@ DRIVERS = (
 AP_MODE = 'ap'
 STA_MODE = 'sta'
 MODES = (
-    (AP_MODE, _('Access point mode')),
-    (STA_MODE, _('Station mode')),
+    (AP_MODE, _('Create a hotspot')),
+    (STA_MODE, _('Connect to a wireless network')),
 )
