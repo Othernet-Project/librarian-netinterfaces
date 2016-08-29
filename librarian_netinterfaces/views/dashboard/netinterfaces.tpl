@@ -67,6 +67,6 @@
     % endfor
 </ul>
 
-<form action="${i18n_url('netinterfaces:settings')}" method="POST" id="wireless-form" class="wireless-settings">
+<div class="wireless-settings">
     ${wireless_form.body()}
-</form>
+</div>

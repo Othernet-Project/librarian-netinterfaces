@@ -293,3 +293,10 @@ DRIVERS = (
     (STANDARD, _('Standard (most devices)')),
     (ALTERNATIVE, _('Alternative (Realtek-based devices)'))
 )
+
+AP_MODE = 'ap'
+STA_MODE = 'sta'
+MODES = (
+    (AP_MODE, _('Create a hotspot')),
+    (STA_MODE, _('Connect to a wireless network')),
+)

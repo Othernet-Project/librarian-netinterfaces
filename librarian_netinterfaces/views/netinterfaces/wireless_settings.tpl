@@ -12,9 +12,7 @@ ${_('Access point settings')}
     <span>${_('Access point settings')}</span>
 </h2>
 
-<form action="${i18n_url('netinterfaces:settings')}" method="POST" id="wireless-form">
-    ${wireless_form.body()}
-</form>
+${wireless_form.body()}
 
 <%block name="extra_scripts">
     <script src="${assets['js/wireless_form']}"></script>
