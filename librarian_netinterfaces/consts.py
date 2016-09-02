@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import locale
+
+from bottle_utils.lazy import Lazy
+from bottle_utils.common import unicode
 from bottle_utils.i18n import lazy_gettext as _
 
-COUNTRIES = (
-    ("", _("No country")),
+COUNTRY_CHOICES = (
     ("AF", _("Afghanistan, Islamic Republic of")),
     ("AL", _("Albania, Republic of")),
     ("DZ", _("Algeria, People's Democratic Republic of")),
@@ -259,7 +262,10 @@ COUNTRIES = (
     ("XS", _("Spratly Islands")),
 )
 
-COUNTRY_CODES = [i[0] for i in COUNTRIES]
+COUNTRIES = Lazy(lambda: sorted(COUNTRY_CHOICES, key=lambda x: unicode(x[1]),
+                                cmp=locale.strcoll))
+
+COUNTRY_CODES = [""] +  [i[0] for i in COUNTRY_CHOICES]
 
 CHANNELS = [(str(i), str(i)) for i in range(1, 14)]
 
@@ -286,4 +292,11 @@ ALTERNATIVE = '2'
 DRIVERS = (
     (STANDARD, _('Standard (most devices)')),
     (ALTERNATIVE, _('Alternative (Realtek-based devices)'))
+)
+
+AP_MODE = 'ap'
+STA_MODE = 'sta'
+MODES = (
+    (AP_MODE, _('Create a hotspot')),
+    (STA_MODE, _('Connect to a wireless network')),
 )

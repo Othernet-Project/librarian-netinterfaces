@@ -20,12 +20,13 @@ from .forms import WifiForm
 
 class NetInterfacesDashboardPlugin(DashboardPlugin):
     # Translators, used as dashboard section title
-    heading = _('Network interfaces')
+    heading = _('Network Interfaces')
     name = 'netinterfaces'
 
     def get_template(self):
         return 'dashboard/' + self.name
 
     def get_context(self):
-        form = WifiForm.from_conf_file()
+        form_cls = WifiForm.get_form_class()
+        form = form_cls.from_conf_file()
         return dict(interfaces=get_network_interfaces(), form=form)

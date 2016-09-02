@@ -2,11 +2,13 @@
 var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function(window, $, templates) {
-  var NORTH_AMERICA, errorMessage, form, generateOptions, initPlugin, resizeSection, section, submitForm, togglePassword, updateChannels, url;
+  var NORTH_AMERICA, errorMessage, form, formContainer, generateOptions, initPlugin, modeForm, resizeSection, section, submitForm, switchMode, togglePassword, toggleSwitch, updateChannels, url;
   NORTH_AMERICA = ['US', 'CA'];
   errorMessage = templates.dashboardPluginError;
   section = $('#dashboard-netinterfaces');
+  formContainer = null;
   form = null;
+  modeForm = null;
   url = null;
   resizeSection = function() {
     section.trigger('remax');
@@ -49,21 +51,44 @@ var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i 
     e.preventDefault();
     res = $.post(url, form.serialize());
     res.done(function(data) {
-      form.html(data);
+      formContainer.html(data);
       ($(window)).trigger('wireless-updated');
-      togglePassword();
-      updateChannels();
+      initPlugin();
+    });
+    res.fail(function() {
+      form.prepend(errorMessage);
+    });
+  };
+  toggleSwitch = function() {
+    var select;
+    select = $(this);
+    return modeForm.submit();
+  };
+  switchMode = function(e) {
+    var res;
+    e.preventDefault();
+    res = $.get(url, modeForm.serialize());
+    res.done(function(data) {
+      formContainer.html(data);
+      initPlugin();
     });
     res.fail(function() {
       form.prepend(errorMessage);
     });
   };
   initPlugin = function(e) {
+    var button;
+    formContainer = section.find('.wireless-settings');
     form = section.find('#wireless-form');
+    modeForm = section.find('#mode-form');
     url = form.attr('action');
     form.on('change', '#security', togglePassword);
     form.on('change', '#country', updateChannels);
     form.on('submit', submitForm);
+    modeForm.on('change', '#mode', toggleSwitch);
+    modeForm.on('submit', switchMode);
+    button = modeForm.find('button');
+    button.hide();
     togglePassword();
     return updateChannels();
   };

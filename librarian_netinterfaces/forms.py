@@ -1,3 +1,4 @@
+import logging
 import os
 
 from bottle import request
@@ -5,7 +6,8 @@ from bottle_utils import form
 from bottle_utils.i18n import lazy_gettext as _
 from hostapdconf import parser, helpers
 
-from . import consts
+from librarian.core.exts import ext_container as exts
+from . import consts, remote
 
 
 SECURITY_MAP = {
@@ -16,6 +18,55 @@ SECURITY_MAP = {
 
 
 class WifiForm(form.Form):
+    #: Available operating modes, aliased for use in templates
+    AP_MODE = consts.AP_MODE
+    STA_MODE = consts.STA_MODE
+    #: List of all available modes
+    VALID_MODES = dict(consts.MODES).keys()
+    #: Use this mode if no valid mode was chosen
+    DEFAULT_MODE = consts.AP_MODE
+    #: Attribute to store discovered subclasses
+    _subclasses = ()
+
+    mode = form.SelectField(choices=consts.MODES)
+
+    @classmethod
+    def subclasses(cls, source=None):
+        """
+        Return all the subclasses of ``cls``.
+        """
+        source = source or cls
+        result = source.__subclasses__()
+        for child in result:
+            result.extend(cls.subclasses(source=child))
+        return result
+
+    @classmethod
+    def get_form_class(cls, mode=None):
+        """
+        Return the matching form for the passed in ``mode``. If no ``mode``
+        was specified, use the already stored one in librarian's setup data,
+        falling back to :py:attr:`~WifiForm.DEFAULT_MODE`.
+        """
+        if mode not in cls.VALID_MODES:
+            mode = exts.config.get('wireless.mode', cls.DEFAULT_MODE)
+        # cache detected subclasses for subsequent accesses
+        cls._subclasses = cls._subclasses or cls.subclasses()
+        (subcls,) = [sc for sc in cls._subclasses if sc.MODE == mode]
+        return subcls
+
+    @classmethod
+    def from_conf_file(cls):
+        """
+        Initialize the form using configuration file or default config
+        """
+        raise NotImplementedError()
+
+
+class WifiAPForm(WifiForm):
+    #: Used to differentiate between the AP / STA forms in templates
+    MODE = consts.AP_MODE
+    #: Validation error messages
     messages = {
         'invalid_channel': _('The selected channel is not legal in the '
                              'chosen country.'),
@@ -23,7 +74,7 @@ class WifiForm(form.Form):
     }
 
     def __init__(self, *args, **kwargs):
-        super(WifiForm, self).__init__(*args, **kwargs)
+        super(WifiAPForm, self).__init__(*args, **kwargs)
         self.show_driver = request.app.config['wireless.driver_selection']
 
     ssid = form.StringField(validators=[form.Required()])
@@ -74,7 +125,7 @@ class WifiForm(form.Form):
         helpers.set_country(conf, self.country.processed_value)
         try:
             helpers.set_channel(conf, self.channel.processed_value)
-        except helpers.ConfigurationError as e:
+        except helpers.ConfigurationError:
             raise self.ValidationError('invalid_channel')
         if self.hide_ssid.processed_value:
             helpers.hide_ssid(conf)
@@ -88,8 +139,12 @@ class WifiForm(form.Form):
         helpers.set_driver(conf, self.driver_type())
         try:
             conf.write(header=consts.HEADER)
+            remote.teardown()
         except OSError:
+            logging.exception("Wireless AP settings saving failed.")
             raise self.ValidationError('save_error')
+        else:
+            exts.setup.append({'wireless.mode': self.MODE})
 
     @staticmethod
     def getconf():
@@ -138,6 +193,7 @@ class WifiForm(form.Form):
         """
         data = {}
         conf = cls.getconf()
+        data['mode'] = cls.MODE
         data['ssid'] = conf.get('ssid')
         data['hide_ssid'] = cls.hide_from_conf(conf)
         data['channel'] = conf.get('channel')
@@ -146,3 +202,42 @@ class WifiForm(form.Form):
         data['password'] = conf.get('wpa_passphrase')
         data['driver'] = cls.driver_from_conf(conf)
         return cls(data=data)
+
+
+class WifiSTAForm(WifiForm):
+    #: Used to differentiate between the AP / STA forms in templates
+    MODE = consts.STA_MODE
+    #: Validation error messages
+    messages = {
+        'save_error': _('Wireless settings could not be applied'),
+    }
+
+    ssid = form.StringField(validators=[form.Required()])
+    password = form.StringField()
+    remote_key = form.StringField()
+
+    @classmethod
+    def from_conf_file(cls):
+        """
+        Initialize the form using configuration file or default config
+        """
+        ssid = exts.config.get('wireless.ssid', '')
+        password = exts.config.get('wireless.password', '')
+        remote_key = exts.config.get('wireless.remote_key', '')
+        return cls(data=dict(mode=cls.MODE,
+                             ssid=ssid,
+                             password=password,
+                             remote_key=remote_key))
+
+    def validate(self):
+        """
+        Perform form-level validation and set the configuration options.
+        """
+        params = dict(('wireless.{}'.format(key), value)
+                      for (key, value) in self.processed_data.items())
+        exts.setup.append(params)
+        try:
+            remote.setup(params)
+        except Exception:
+            logging.exception("Wireless STA settings saving failed.")
+            raise self.ValidationError('save_error')
