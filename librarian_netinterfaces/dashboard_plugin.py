@@ -20,7 +20,7 @@ from .forms import WifiForm
 
 class NetInterfacesDashboardPlugin(DashboardPlugin):
     # Translators, used as dashboard section title
-    heading = _('Network interfaces')
+    heading = _('Network Interfaces')
     name = 'netinterfaces'
 
     def get_template(self):
