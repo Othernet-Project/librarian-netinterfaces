@@ -7,7 +7,7 @@ from bottle_utils.i18n import lazy_gettext as _
 from hostapdconf import parser, helpers
 
 from librarian.core.exts import ext_container as exts
-from . import consts, remote
+from . import consts, sta
 
 
 SECURITY_MAP = {
@@ -139,7 +139,7 @@ class WifiAPForm(WifiForm):
         helpers.set_driver(conf, self.driver_type())
         try:
             conf.write(header=consts.HEADER)
-            remote.teardown()
+            sta.teardown()
         except OSError:
             logging.exception("Wireless AP settings saving failed.")
             raise self.ValidationError('save_error')
@@ -214,7 +214,6 @@ class WifiSTAForm(WifiForm):
 
     ssid = form.StringField(validators=[form.Required()])
     password = form.StringField()
-    remote_key = form.StringField()
 
     @classmethod
     def from_conf_file(cls):
@@ -223,11 +222,9 @@ class WifiSTAForm(WifiForm):
         """
         ssid = exts.config.get('wireless.ssid', '')
         password = exts.config.get('wireless.password', '')
-        remote_key = exts.config.get('wireless.remote_key', '')
         return cls(data=dict(mode=cls.MODE,
                              ssid=ssid,
-                             password=password,
-                             remote_key=remote_key))
+                             password=password))
 
     def validate(self):
         """
@@ -235,9 +232,12 @@ class WifiSTAForm(WifiForm):
         """
         params = dict(('wireless.{}'.format(key), value)
                       for (key, value) in self.processed_data.items())
-        exts.setup.append(params)
         try:
-            remote.setup(params)
+            sta.setup(params)
         except Exception:
             logging.exception("Wireless STA settings saving failed.")
+            sta.teardown()
             raise self.ValidationError('save_error')
+        else:
+            # on successful setup, store persistent config
+            exts.setup.append(params)
