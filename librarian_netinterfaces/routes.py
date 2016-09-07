@@ -42,8 +42,7 @@ class NetSettings(XHRPartialFormRoute):
     def form_valid(self):
         commands = self.config['wireless.restart_commands']
         exts.tasks.schedule(restart_services, args=(commands,), delay=5)
-        return dict(message=_('Network settings have been saved. The device'
-                              'is going to reboot now.'),
+        return dict(message=_('Network settings have been saved.'),
                     redirect_url=i18n_url('dashboard:main'))
 
     def form_invalid(self):
