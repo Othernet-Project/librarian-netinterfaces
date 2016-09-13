@@ -10,12 +10,17 @@ from librarian.core.contrib.templates.renderer import template
 from .forms import WifiForm
 
 
-def restart_services(restart_cmd):
-    """ Restart network services """
+def restart_services(commands):
+    """
+    Execute the given sequence of commands that will restart the network
+    stack, reinitializing it with the newly applied configuration.
+    """
     logging.info('Restarting network services')
-    ret = os.system(restart_cmd)
-    if ret:
-        logging.debug('"{}" returned {}'.format(restart_cmd, ret))
+    for cmd in commands:
+        logging.debug('Executing command: "%s"', cmd)
+        ret = os.system(cmd)
+        if ret:
+            logging.debug('"%s" returned %s', cmd, ret)
 
 
 class NetSettings(XHRPartialFormRoute):
@@ -35,10 +40,9 @@ class NetSettings(XHRPartialFormRoute):
         return form_factory.from_conf_file()
 
     def form_valid(self):
-        restart_cmd = self.config['wireless.restart_command']
-        exts.tasks.schedule(restart_services, args=(restart_cmd,), delay=5)
-        return dict(message=_('Network settings have been saved. The device'
-                              'is going to reboot now.'),
+        commands = self.config['wireless.restart_commands']
+        exts.tasks.schedule(restart_services, args=(commands,), delay=5)
+        return dict(message=_('Network settings have been saved.'),
                     redirect_url=i18n_url('dashboard:main'))
 
     def form_invalid(self):
