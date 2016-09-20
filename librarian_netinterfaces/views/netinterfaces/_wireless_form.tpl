@@ -1,5 +1,5 @@
 <%namespace name="forms" file="/ui/forms.tpl"/>
-<%namespace name="wifi_form" file="_${context['form'].MODE}_form.tpl"/>
+<%namespace name="wifi_form" file="_${context['form'].MODE.lower()}_form.tpl"/>
 
 ${forms.form_message(message) if message else ''}
 ${forms.form_errors([form.error]) if form.error else ''}
