@@ -49,7 +49,8 @@ class WifiForm(form.Form):
         falling back to :py:attr:`~WifiForm.DEFAULT_MODE`.
         """
         if mode not in cls.VALID_MODES:
-            mode = exts.config.get('wireless.mode', cls.DEFAULT_MODE)
+            default = exts.config.get('wireless.mode', cls.DEFAULT_MODE)
+            mode = sta.get_wireless_mode() or default
         # cache detected subclasses for subsequent accesses
         cls._subclasses = cls._subclasses or cls.subclasses()
         (subcls,) = [sc for sc in cls._subclasses if sc.MODE == mode]

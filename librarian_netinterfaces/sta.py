@@ -31,6 +31,19 @@ STA_MODE = 'STA'
 WIRELESS_MODE_FILE = "/etc/conf.d/wireless"
 
 
+def get_wireless_mode():
+    """
+    Return currently active wireless mode indicated by the os generated file.
+    """
+    try:
+        with open(WIRELESS_MODE_FILE, 'r') as wifi_mode_file:
+            mode = wifi_mode_file.read().strip()
+    except Exception:
+        return None
+    else:
+        return mode if mode in (AP_MODE, STA_MODE) else None
+
+
 def get_wpa_network_config(ssid, password):
     """
     Generate 'network' section of 'wpa_supplicant.conf'.
