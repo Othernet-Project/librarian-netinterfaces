@@ -13,6 +13,6 @@ ${forms.form_errors([form.error]) if form.error else ''}
     ${h.HIDDEN('mode', form.MODE)}
     ${wifi_form.body()}
     <p class="buttons">
-        <button type="submit">${_('Save')}</button>
+        <button type="submit">${_('Save and Reboot')}</button>
     </p>
 </form>
