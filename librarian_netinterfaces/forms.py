@@ -42,7 +42,7 @@ class WifiForm(form.Form):
         return result
 
     @classmethod
-    def get_form_class(cls, mode=None):
+    def get_form_class(cls, mode=None, security=None):
         """
         Return the matching form for the passed in ``mode``. If no ``mode``
         was specified, use the already stored one in librarian's setup data,
@@ -53,8 +53,13 @@ class WifiForm(form.Form):
             mode = sta.get_wireless_mode() or default
         # cache detected subclasses for subsequent accesses
         cls._subclasses = cls._subclasses or cls.subclasses()
-        (subcls,) = [sc for sc in cls._subclasses if sc.MODE == mode]
-        return subcls
+        filtered = [sc for sc in cls._subclasses if sc.MODE == mode]
+        subcls = filtered[-1]
+        if mode == consts.AP_MODE:
+            # in AP mode there's only one form, return it
+            return subcls
+        # in station mode get the form for the requested security protocol
+        return subcls.for_security_protocol(security)
 
     @classmethod
     def from_conf_file(cls):
@@ -208,24 +213,21 @@ class WifiAPForm(WifiForm):
 class WifiSTAForm(WifiForm):
     #: Used to differentiate between the AP / STA forms in templates
     MODE = consts.STA_MODE
+    #: Protocol aliases
+    NO_SECURITY = consts.NO_SECURITY
+    WPA_PROTOCOL = consts.WPA
+    WEP_PROTOCOL = consts.WEP
+    #: List of supported security protocols
+    VALID_SECURITY_PROTOCOLS = dict(consts.SECURITY_PROTOCOLS).keys()
+    #: Use this security protocol if no valid one was chosen
+    DEFAULT_SECURITY = WPA_PROTOCOL
     #: Validation error messages
     messages = {
         'save_error': _('Wireless settings could not be applied'),
     }
 
     ssid = form.StringField(validators=[form.Required()])
-    password = form.StringField()
-
-    @classmethod
-    def from_conf_file(cls):
-        """
-        Initialize the form using configuration file or default config
-        """
-        ssid = exts.config.get('wireless.ssid', '')
-        password = exts.config.get('wireless.password', '')
-        return cls(data=dict(mode=cls.MODE,
-                             ssid=ssid,
-                             password=password))
+    security = form.SelectField(choices=consts.SECURITY_PROTOCOLS)
 
     def validate(self):
         """
@@ -242,3 +244,97 @@ class WifiSTAForm(WifiForm):
         else:
             # on successful setup, store persistent config
             exts.setup.append(params)
+
+    @classmethod
+    def for_security_protocol(cls, security):
+        if security not in cls.VALID_SECURITY_PROTOCOLS:
+            security = exts.config.get('wireless.security',
+                                       cls.DEFAULT_SECURITY)
+        cls._subclasses = cls._subclasses or cls.subclasses()
+        (form_cls,) = [sc for sc in cls._subclasses
+                       if getattr(sc, 'SECURITY', None) == security]
+        return form_cls
+
+
+class WifiOpenForm(WifiSTAForm):
+    #: Which security protocol is supported by the form
+    SECURITY = consts.NO_SECURITY
+
+    @classmethod
+    def from_conf_file(cls):
+        """
+        Initialize the form using configuration file or default config
+        """
+        ssid = exts.config.get('wireless.ssid', '')
+        return cls(data=dict(mode=cls.MODE,
+                             security=cls.SECURITY,
+                             ssid=ssid))
+
+
+class WifiWPAForm(WifiSTAForm):
+    #: Which security protocol is supported by the form
+    SECURITY = consts.WPA
+
+    password = form.StringField()
+
+    @classmethod
+    def from_conf_file(cls):
+        """
+        Initialize the form using configuration file or default config
+        """
+        ssid = exts.config.get('wireless.ssid', '')
+        password = exts.config.get('wireless.password', '')
+        return cls(data=dict(mode=cls.MODE,
+                             security=cls.SECURITY,
+                             ssid=ssid,
+                             password=password))
+
+
+class WifiWEPForm(WifiSTAForm):
+    #: Which security protocol is supported by the form
+    SECURITY = consts.WEP
+    #: WEP supports up to 4 keys to be specified, but only 1 can be active
+    KEY_INDEXES = (
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, 3),
+    )
+    #: Validation error messages
+    messages = {
+        'missing_key': _('The selected key index has no key specified'),
+    }
+
+    key0 = form.StringField()
+    key1 = form.StringField()
+    key2 = form.StringField()
+    key3 = form.StringField()
+    key_index = form.SelectField(choices=KEY_INDEXES)
+
+    @classmethod
+    def from_conf_file(cls):
+        """
+        Initialize the form using configuration file or default config
+        """
+        ssid = exts.config.get('wireless.ssid', '')
+        key0 = exts.config.get('wireless.key0', '')
+        key1 = exts.config.get('wireless.key1', '')
+        key2 = exts.config.get('wireless.key2', '')
+        key3 = exts.config.get('wireless.key3', '')
+        key_index = exts.config.get('wireless.key_index', '')
+        return cls(data=dict(mode=cls.MODE,
+                             security=cls.SECURITY,
+                             ssid=ssid,
+                             key0=key0,
+                             key1=key1,
+                             key2=key2,
+                             key3=key3,
+                             key_index=key_index))
+
+    def validate(self):
+        key_index = self.processed_data['key_index']
+        key = self.processed_data['key{}'.format(key_index)]
+        if not key:
+            raise self.ValidationError('missing_key')
+        # call superclass so saving is executed
+        super(WifiWEPForm, self).validate()
