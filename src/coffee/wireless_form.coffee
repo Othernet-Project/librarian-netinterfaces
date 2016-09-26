@@ -5,7 +5,7 @@
   section = $ '#dashboard-netinterfaces'
   formContainer = null
   form = null
-  modeForm = null
+  switchForm = null
   url = null
 
   resizeSection = () ->
@@ -61,12 +61,12 @@
 
   toggleSwitch = () ->
     select = $ @
-    modeForm.submit()
+    switchForm.submit()
 
 
   switchMode = (e) ->
     e.preventDefault()
-    res = $.get url, modeForm.serialize()
+    res = $.get url, switchForm.serialize()
     res.done (data) ->
       formContainer.html data
       initPlugin()
@@ -80,14 +80,15 @@
   initPlugin = (e) ->
     formContainer = section.find '.wireless-settings'
     form = section.find '#wireless-form'
-    modeForm = section.find '#mode-form'
+    switchForm = section.find '#switch-form'
     url = form.attr 'action'
     form.on 'change', '#security', togglePassword
     form.on 'change', '#country', updateChannels
     form.on 'submit', submitForm
-    modeForm.on 'change', '#mode', toggleSwitch
-    modeForm.on 'submit', switchMode
-    button = modeForm.find 'button'
+    switchForm.on 'change', '#mode', toggleSwitch
+    switchForm.on 'change', '#security', toggleSwitch
+    switchForm.on 'submit', switchMode
+    button = switchForm.find 'button'
     button.hide()
 
     togglePassword()

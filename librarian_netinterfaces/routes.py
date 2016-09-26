@@ -33,7 +33,8 @@ class NetSettings(XHRPartialFormRoute):
 
     def get_form_factory(self):
         mode = self.request.params.get('mode')
-        return self.form_factory.get_form_class(mode=mode)
+        security = self.request.params.get('security')
+        return self.form_factory.get_form_class(mode=mode, security=security)
 
     def get_unbound_form(self):
         form_factory = self.get_form_factory()
