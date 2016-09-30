@@ -294,9 +294,18 @@ DRIVERS = (
     (ALTERNATIVE, _('Alternative (Realtek-based devices)'))
 )
 
-AP_MODE = 'ap'
-STA_MODE = 'sta'
+AP_MODE = 'AP'
+STA_MODE = 'STA'
 MODES = (
     (AP_MODE, _('Create a hotspot')),
     (STA_MODE, _('Connect to a wireless network')),
+)
+
+NO_SECURITY = 'NONE'
+WPA = 'WPA'
+WEP = 'WEP'
+SECURITY_PROTOCOLS = (
+    (NO_SECURITY, _('No security')),
+    (WPA, _('WPA')),
+    (WEP, _('WEP')),
 )
